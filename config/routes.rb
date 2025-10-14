@@ -24,4 +24,11 @@ Rails.application.routes.draw do
     resources :items
     resources :orders
   end
+
+  namespace :api do
+    namespace :v1 do
+      get "current_user", to: "users#current"
+    end
+  end
+
 end
