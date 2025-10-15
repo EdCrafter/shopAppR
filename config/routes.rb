@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   get "items/index"
   get "items/show"
   root "items#index"
-  devise_for :users
+
+  #devise_for :users
 
   resources :items, only: [:index, :show] do
     collection do
@@ -25,10 +26,21 @@ Rails.application.routes.draw do
     resources :orders
   end
 
-  namespace :api do
-    namespace :v1 do
-      get "current_user", to: "users#current"
+  namespace :api, defaults: { format: :json } do
+  namespace :v1 do
+    devise_scope :user do
+      post "sign_in", to: "sessions#create"
+      post "users", to: "registrations#create"
+      delete "sign_out", to: "sessions#destroy"
     end
+    get "current_user", to: "users#current"
   end
+end
+
+
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
+
 
 end

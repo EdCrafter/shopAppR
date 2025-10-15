@@ -15,19 +15,35 @@ export const register = async (data: {
   firstName?: string;
   lastName?: string;
 }) => {
-  const response = await api.post("/users", { user: data });
-  return response.data;
+  try {
+    const response = await api.post("/api/v1/users", {
+      user: {
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.password_confirmation,
+        first_name: data.firstName,
+        last_name: data.lastName,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.data) {
+      return error.response.data;
+    }
+    throw error;
+  }
 };
 
+
 export const login = async (email: string, password: string) => {
-  const response = await api.post("/users/sign_in", {
+  const response = await api.post("/api/v1/sign_in", {
     user: { email, password },
   });
   return response.data;
 };
 
 export const logout = async () => {
-  const response = await api.delete("/users/sign_out");
+  const response = await api.delete("/api/v1/sign_out");
   return response.data;
 };
 

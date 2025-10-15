@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-// import CartPage from "./components/CartPage";
-// import ProfilePage from "./components/ProfilePage";
-// import AdminPage from "./components/AdminPage";
+import Cart from "./features/cart/Cart";
+import Profile from "./features/auth/Profile";
+import Login from "./features/auth/Login";
+import Logout from "./features/auth/Logout";
+import Register from "./features/auth/Register";
+import Admin from "./pages/Admin";
+import { logout } from './app/api';
 
 function App() {
-  const [currentUser, setCurrentUser] = useState<{ role: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{email: string; role: string} | null>(null);
 
   const handleLogout = () => {
-    // например, удаляем пользователя из состояния
     setCurrentUser(null);
-    // здесь можно вызвать API для выхода
   };
 
   return (
@@ -20,7 +22,14 @@ function App() {
       <Navbar currentUser={currentUser} onLogout={handleLogout} />
       <div className="container mt-4">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home currentUser={currentUser} />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/profile" element={<Profile />} />
+        {currentUser?.role === "admin" && (
+          <Route path="/admin" element={<Admin />} />
+        )}
+        <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
+        <Route path="/signup" element={<Register />} />
       </Routes>
       </div>
     </BrowserRouter>
