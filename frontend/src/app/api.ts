@@ -53,12 +53,12 @@ export const fetchCurrentUser = async () => {
 };
 
 export const getItems = async () => {
-  const response = await api.get("/items");
+  const response = await api.get("/api/v1/items");
   return response.data;
 };
 
 export const searchItems = async (query: string) => {
-  const response = await api.get(`/items/search?query=${encodeURIComponent(query)}`);
+  const response = await api.get(`/api/v1/items/search?query=${encodeURIComponent(query)}`);
   return response.data;
 };
 

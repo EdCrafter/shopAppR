@@ -42,5 +42,15 @@ end
     sessions: 'users/sessions'
   }
 
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      resources :items, only: [:index, :show] do
+        collection do
+          get :search
+        end
+      end
+    end
+  end
+
 
 end
