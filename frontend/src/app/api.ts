@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Item } from "../features/items/ItemsSlice";
 
 const api = axios.create({
   baseURL: "http://localhost:3000",
@@ -67,10 +68,12 @@ export const getCart = async () => {
   return response.data;
 };
 
-export const addToCart = async (itemId: number, quantity = 1) => {
-  const response = await api.post("/cart_items", {
-    item_id: itemId,
-    quantity,
+export const checkout = async (cartItems: { item: Item; quantity: number }[]) => {
+  const response = await api.post("/api/v1/checkout", {
+    items: cartItems.map(ci => ({
+      item_id: ci.item.id,
+      quantity: ci.quantity,
+    })),
   });
   return response.data;
 };
@@ -80,9 +83,11 @@ export const removeFromCart = async (cartItemId: number) => {
   return response.data;
 };
 
-export const checkout = async () => {
-  const response = await api.post("/cart/checkout");
-  return response.data;
+export const getUserOrders = async () => {
+  const response = await api.get("/api/v1/orders");
+  return response.data; 
 };
+
+
 
 export default api;

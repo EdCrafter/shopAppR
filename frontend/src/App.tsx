@@ -5,10 +5,9 @@ import Home from "./pages/Home";
 import Cart from "./features/cart/Cart";
 import Profile from "./features/auth/Profile";
 import Login from "./features/auth/Login";
-import Logout from "./features/auth/Logout";
+import Orders from "./features/orders/Orders";
 import Register from "./features/auth/Register";
 import Admin from "./pages/Admin";
-import { logout } from './app/api';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<{email: string; role: string} | null>(null);
@@ -24,7 +23,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home currentUser={currentUser} />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="/profile" element={<Profile />} />
+        
         {currentUser?.role === "admin" && (
           <Route path="/admin" element={<Admin />} />
         )}

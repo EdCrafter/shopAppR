@@ -15,9 +15,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :cart, only: [:show] do
-    post :checkout, to: "carts#checkout"
-  end
+
   resources :orders, only: [:index, :show]
 
   namespace :admin do
@@ -27,15 +25,17 @@ Rails.application.routes.draw do
   end
 
   namespace :api, defaults: { format: :json } do
-  namespace :v1 do
-    devise_scope :user do
-      post "sign_in", to: "sessions#create"
-      post "users", to: "registrations#create"
-      delete "sign_out", to: "sessions#destroy"
+    namespace :v1 do
+      devise_scope :user do
+        post "sign_in", to: "sessions#create"
+        post "users", to: "registrations#create"
+        delete "sign_out", to: "sessions#destroy"
+        resources :orders, only: [:index] 
+        post "checkout", to: "orders#checkout"
+      end
+      get "current_user", to: "users#current"
     end
-    get "current_user", to: "users#current"
   end
-end
 
 
   devise_for :users, controllers: {
@@ -51,6 +51,7 @@ end
       end
     end
   end
+
 
 
 end

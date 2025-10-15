@@ -16,6 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentUser, onLogout }) => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {currentUser && <li className="nav-item"><Link className="nav-link" to="/">Products</Link></li>}
             {currentUser && <li className="nav-item"><Link className="nav-link" to="/cart">Cart</Link></li>}
+            {currentUser && <li className="nav-item"><Link className="nav-link" to="/orders">Orders</Link></li>}
             {currentUser && <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>}
             {currentUser?.role === "admin" && <li className="nav-item"><Link className="nav-link" to="/admin">Admin</Link></li>}
           </ul>
