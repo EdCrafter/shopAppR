@@ -88,6 +88,15 @@ export const getUserOrders = async () => {
   return response.data; 
 };
 
+export const getUserProfile = async () => {
+  const response = await api.get("/api/v1/users/me");
+  return response.data;
+};
+
+export const updateUserProfile = async (data: any) => {
+  const response = await api.put("/api/v1/users/me", data);
+  return response.data;
+};
 
 
 export default api;

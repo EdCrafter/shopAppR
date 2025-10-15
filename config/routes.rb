@@ -52,6 +52,13 @@ Rails.application.routes.draw do
     end
   end
 
-
+  namespace :api do
+    namespace :v1 do
+      resource :users, only: [] do
+        get 'me', to: 'users#current'
+        put 'me', to: 'users#update'
+      end
+    end
+  end
 
 end
