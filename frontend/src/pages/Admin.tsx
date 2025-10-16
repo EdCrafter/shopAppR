@@ -3,8 +3,8 @@ import { getUserProfile, getAllUsers, getAllProducts, updateUser, updateProduct 
 
 type User = {
   id: number;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
 };
 
@@ -19,6 +19,8 @@ const Admin: React.FC = () => {
   const [profile, setProfile] = useState<{ role: string }>({ role: "" });
   const [users, setUsers] = useState<User[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [originalUsers, setOriginalUsers] = useState<User[]>([]);
+  const [originalProducts, setOriginalProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -33,9 +35,11 @@ const Admin: React.FC = () => {
         if (userProfile.role === "admin") {
           const allUsers = await getAllUsers();
           setUsers(allUsers);
+          setOriginalUsers(allUsers.map((u: User) => ({ ...u })));
 
           const allProducts = await getAllProducts();
           setProducts(allProducts);
+          setOriginalProducts(allProducts.map((p: Product) => ({ ...p })));
         }
       } catch (error) {
         console.error(error);
@@ -57,7 +61,7 @@ const Admin: React.FC = () => {
 
   const validateUser = (user: User) => {
     const nameRegex = /^[A-Za-z]+$/;
-    if (!nameRegex.test(user.firstName) || !nameRegex.test(user.lastName)) {
+    if (!nameRegex.test(user.first_name) || !nameRegex.test(user.last_name)) {
       setMessage("First and Last names must contain only letters.");
       return false;
     }
@@ -115,22 +119,40 @@ const Admin: React.FC = () => {
     }
   };
 
+  const resetUser = (user: User) => {
+    const original = originalUsers.find(u => u.id === user.id);
+    if (original) {
+      handleUserChange(user.id, "first_name", original.first_name);
+      handleUserChange(user.id, "last_name", original.last_name);
+      handleUserChange(user.id, "email", original.email);
+    }
+  };
+
+  const resetProduct = (product: Product) => {
+    const original = originalProducts.find(p => p.id === product.id);
+    if (original) {
+      handleProductChange(product.id, "name", original.name);
+      handleProductChange(product.id, "description", original.description);
+      handleProductChange(product.id, "price", original.price);
+    }
+  };
+
   if (loading) return <p>Loading admin panel...</p>;
   if (profile.role !== "admin") return <p>You do not have access to this page.</p>;
 
   return (
-    <div style={{ maxWidth: "900px", margin: "20px auto" }}>
+    <div className="container mt-4">
       <h2>Admin Panel</h2>
 
-      {message && <div style={{ padding: "10px", backgroundColor: "#28a745", color: "white", borderRadius: 6, marginBottom: 10 }}>{message}</div>}
+      {message && <div className="alert alert-success">{message}</div>}
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="mb-3">
         <button className={`btn ${activeTab === "users" ? "btn-primary" : "btn-secondary"} me-2`} onClick={() => setActiveTab("users")}>Users</button>
         <button className={`btn ${activeTab === "products" ? "btn-primary" : "btn-secondary"}`} onClick={() => setActiveTab("products")}>Products</button>
       </div>
 
       {activeTab === "users" && (
-        <table className="table">
+        <table className="table table-bordered">
           <thead>
             <tr>
               <th>First Name</th><th>Last Name</th><th>Email</th><th>Actions</th>
@@ -139,10 +161,13 @@ const Admin: React.FC = () => {
           <tbody>
             {users.map(user => (
               <tr key={user.id}>
-                <td><input type="text" value={user.firstName} onChange={e => handleUserChange(user.id, "firstName", e.target.value)} /></td>
-                <td><input type="text" value={user.lastName} onChange={e => handleUserChange(user.id, "lastName", e.target.value)} /></td>
-                <td><input type="email" value={user.email} onChange={e => handleUserChange(user.id, "email", e.target.value)} /></td>
-                <td><button className="btn btn-primary" onClick={() => saveUser(user)} disabled={saving}>Save</button></td>
+                <td><input type="text" className="form-control" value={user.first_name} onChange={e => handleUserChange(user.id, "first_name", e.target.value)} /></td>
+                <td><input type="text" className="form-control" value={user.last_name} onChange={e => handleUserChange(user.id, "last_name", e.target.value)} /></td>
+                <td><input type="email" className="form-control" value={user.email} onChange={e => handleUserChange(user.id, "email", e.target.value)} /></td>
+                <td>
+                  <button className="btn btn-primary me-2" onClick={() => saveUser(user)} disabled={saving}>Save</button>
+                  <button className="btn btn-warning" onClick={() => resetUser(user)} disabled={saving}>Reset</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -150,7 +175,7 @@ const Admin: React.FC = () => {
       )}
 
       {activeTab === "products" && (
-        <table className="table">
+        <table className="table table-bordered">
           <thead>
             <tr>
               <th>Name</th><th>Description</th><th>Price</th><th>Actions</th>
@@ -159,10 +184,13 @@ const Admin: React.FC = () => {
           <tbody>
             {products.map(product => (
               <tr key={product.id}>
-                <td><input type="text" value={product.name} onChange={e => handleProductChange(product.id, "name", e.target.value)} /></td>
-                <td><input type="text" value={product.description} onChange={e => handleProductChange(product.id, "description", e.target.value)} /></td>
-                <td><input type="number" value={product.price} onChange={e => handleProductChange(product.id, "price", parseFloat(e.target.value))} /></td>
-                <td><button className="btn btn-primary" onClick={() => saveProduct(product)} disabled={saving}>Save</button></td>
+                <td><input type="text" className="form-control" value={product.name} onChange={e => handleProductChange(product.id, "name", e.target.value)} /></td>
+                <td><textarea className="form-control" style={{ height: 50 }} value={product.description} onChange={e => handleProductChange(product.id, "description", e.target.value)} /></td>
+                <td><input type="number" className="form-control" value={product.price} onChange={e => handleProductChange(product.id, "price", parseFloat(e.target.value))} /></td>
+                <td>
+                  <button className="btn btn-primary me-2" onClick={() => saveProduct(product)} disabled={saving}>Save</button>
+                  <button className="btn btn-warning" onClick={() => resetProduct(product)} disabled={saving}>Reset</button>
+                </td>
               </tr>
             ))}
           </tbody>

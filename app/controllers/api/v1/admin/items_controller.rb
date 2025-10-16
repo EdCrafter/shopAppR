@@ -28,7 +28,7 @@ module Api
         private
 
         def item_params
-            params.require(:item).permit(:name, :description, :price)
+            params.require(:item).permit(:id,:name, :description, :price)
         end
 
         def authorize_admin!
