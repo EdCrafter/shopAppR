@@ -6,7 +6,7 @@ module Api
         before_action :authorize_admin!
 
         def index
-            items = Item.select(:id, :name, :description, :price)
+            items = Item.where(active: true).select(:id, :name, :description, :price)
             render json: items
         end
 
@@ -19,11 +19,23 @@ module Api
             end
         end
 
-        def destroy
-            item = Item.find(params[:id])
-            item.destroy
-            render json: { message: "Item deleted" }
+        def create
+            item = Item.new(item_params)
+            if item.save
+                render json: { message: "Item created successfully", item: item }, status: :created
+            else
+                render json: { errors: item.errors.full_messages }, status: :unprocessable_entity
+            end
         end
+
+        def destroy
+        item = Item.find(params[:id])
+        item.update(active: false)
+        render json: { message: "Item hidden successfully" }
+        rescue ActiveRecord::RecordNotFound
+        render json: { error: "Item not found" }, status: :not_found
+        end
+
 
         private
 

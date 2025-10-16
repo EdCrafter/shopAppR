@@ -23,6 +23,8 @@ module Api
                     user = User.find(params[:id])
                     user.destroy
                     render json: { message: "User deleted" }
+                rescue ActiveRecord::RecordNotFound
+                    render json: { error: "User not found" }, status: :not_found
                 end
 
                 private

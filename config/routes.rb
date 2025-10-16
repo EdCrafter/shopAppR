@@ -58,12 +58,17 @@ Rails.application.routes.draw do
         get 'me', to: 'users#current'
         put 'me', to: 'users#update'
       end
+    end
+  end
 
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
       namespace :admin do
-        resources :users, only: [:index, :update, :destroy]
-        resources :items, only: [:index, :update, :destroy]
+        resources :users, only: [:index, :update, :destroy, :create]
+        resources :items, only: [:index, :update, :destroy, :create]
       end
     end
   end
+
 
 end

@@ -7,8 +7,8 @@ const Register: React.FC = () => {
     email: "",
     password: "",
     password_confirmation: "",
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -29,8 +29,8 @@ const Register: React.FC = () => {
           email: "",
           password: "",
           password_confirmation: "",
-          firstName: "",
-          lastName: "",
+          first_name: "",
+          last_name: "",
         });
         navigate("/login");
       } else {
@@ -50,10 +50,10 @@ const Register: React.FC = () => {
         <div className="mb-3">
           <label className="form-label">First Name</label>
           <input
-            name="firstName"
+            name="first_name"
             type="text"
             className="form-control"
-            value={form.firstName}
+            value={form.first_name}
             onChange={handleChange}
             required
           />
@@ -61,10 +61,10 @@ const Register: React.FC = () => {
         <div className="mb-3">
           <label className="form-label">Last Name</label>
           <input
-            name="lastName"
+            name="last_name"
             type="text"
             className="form-control"
-            value={form.lastName}
+            value={form.last_name}
             onChange={handleChange}
             required
           />
