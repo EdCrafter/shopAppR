@@ -58,6 +58,11 @@ Rails.application.routes.draw do
         get 'me', to: 'users#current'
         put 'me', to: 'users#update'
       end
+
+      namespace :admin do
+        resources :users, only: [:index, :update, :destroy]
+        resources :items, only: [:index, :update, :destroy]
+      end
     end
   end
 

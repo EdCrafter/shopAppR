@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { getUserProfile, updateUserProfile } from "../../app/api";
 
 type UserProfile = {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   role?: string;
 };
@@ -16,14 +16,14 @@ type PasswordData = {
 
 const Profile: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile>({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     role: "",
   });
   const [originalProfile, setOriginalProfile] = useState<UserProfile>({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     role: "",
   });
@@ -42,8 +42,8 @@ const Profile: React.FC = () => {
       try {
         const data = await getUserProfile();
         const userProfile = {
-          firstName: data.firstName,
-          lastName: data.lastName,
+          first_name: data.first_name,
+          last_name: data.last_name,
           email: data.email,
           role: data.role,
         };
@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
     setMessage("");
 
     const nameRegex = /^[A-Za-zА-Яа-яЁё\s-]+$/;
-    if (!nameRegex.test(profile.firstName) || !nameRegex.test(profile.lastName)) {
+    if (!nameRegex.test(profile.first_name) || !nameRegex.test(profile.last_name)) {
       setMessage("First Name and Last Name can only contain letters, spaces, or hyphens.");
       setSaving(false);
       return;
@@ -114,8 +114,8 @@ const Profile: React.FC = () => {
 
     try {
       const payload: any = {
-        first_name: profile.firstName,
-        last_name: profile.lastName,
+        first_name: profile.first_name,
+        last_name: profile.last_name,
         email: profile.email,
       };
 
@@ -181,8 +181,8 @@ const Profile: React.FC = () => {
           <label>First Name:</label>
           <input
             type="text"
-            name="firstName"
-            value={profile.firstName}
+            name="first_name"
+            value={profile.first_name}
             onChange={handleChange}
             className="form-control"
             disabled={!editable}
@@ -194,8 +194,8 @@ const Profile: React.FC = () => {
           <label>Last Name:</label>
           <input
             type="text"
-            name="lastName"
-            value={profile.lastName}
+            name="last_name"
+            value={profile.last_name}
             onChange={handleChange}
             className="form-control"
             disabled={!editable}

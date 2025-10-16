@@ -99,4 +99,35 @@ export const updateUserProfile = async (data: any) => {
 };
 
 
+export const getAllUsers = async () => {
+  const response = await api.get("/api/v1/admin/users");
+  return response.data;
+};
+
+export const updateUser = async (userId: number, data: any) => {
+  const response = await api.put(`/api/v1/admin/users/${userId}`, { user: data });
+  return response.data;
+};
+
+export const getAllProducts = async () => {
+  const response = await api.get("/api/v1/admin/items");
+  return response.data;
+};
+
+export const updateProduct = async (itemId: number, data: any) => {
+  const response = await api.put(`/api/v1/admin/items/${itemId}`, { item: data });
+  return response.data;
+};
+
+export const deleteUser = async (userId: number) => {
+  const response = await api.delete(`/api/v1/admin/users/${userId}`);
+  return response.data;
+};
+
+export const deleteProduct = async (itemId: number) => {
+  const response = await api.delete(`/api/v1/admin/items/${itemId}`);
+  return response.data;
+};
+
+
 export default api;
