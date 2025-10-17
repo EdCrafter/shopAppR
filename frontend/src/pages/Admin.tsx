@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { 
   getUserProfile, getAllUsers, getAllProducts, 
   updateUser, updateProduct, register, createProduct, 
-  deleteUser as apiDeleteUser, deleteProduct as apiDeleteProduct
+  deleteUser as apiDeleteUser, deleteProduct as apiDeleteProduct,
+  restoreProduct as apiRestoreProduct
 } from "../app/api";
 
 type User = {
@@ -17,6 +18,7 @@ type Product = {
   name: string;
   description: string;
   price: number;
+  active: boolean;
 };
 
 const Admin: React.FC = () => {
@@ -256,6 +258,27 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleRestoreProduct = async (id: number) => {
+    setSaving(true);
+    try {
+      await apiRestoreProduct(id);
+      setProducts(prev =>
+        prev.map(p => (p.id === id ? { ...p, active: true } : p))
+      );
+      setOriginalProducts(prev =>
+        prev.map(p => (p.id === id ? { ...p, active: true } : p))
+      );
+      setMessage("Product restored successfully!");
+    } catch (err) {
+      console.error(err);
+      setMessage("Failed to restore product.");
+    } finally {
+      setSaving(false);
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
+
+
   if (loading) return <p>Loading admin panel...</p>;
   if (profile.role !== "admin") return <p>You do not have access to this page.</p>;
 
@@ -272,9 +295,9 @@ const Admin: React.FC = () => {
 
       {activeTab === "users" && (
         <>
-          <div className="mb-2">
+          <div>
             <button className="btn btn-info me-2" onClick={fetchUsers}>Refresh Users</button>
-            <button className="btn btn-success mb-2" onClick={() => setShowAddUserForm(prev => !prev)}>
+            <button className="btn btn-success" onClick={() => setShowAddUserForm(prev => !prev)}>
               {showAddUserForm ? "Hide Add User Form" : "Add User"}
             </button>
           </div>
@@ -316,9 +339,9 @@ const Admin: React.FC = () => {
 
       {activeTab === "products" && (
         <>
-          <div className="mb-2">
+          <div>
             <button className="btn btn-info me-2" onClick={fetchProducts}>Refresh Products</button>
-            <button className="btn btn-success mb-2" onClick={() => setShowAddProductForm(prev => !prev)}>
+            <button className="btn btn-success" onClick={() => setShowAddProductForm(prev => !prev)}>
               {showAddProductForm ? "Hide Add Product Form" : "Add Product"}
             </button>
           </div>
@@ -345,10 +368,41 @@ const Admin: React.FC = () => {
                   <td><textarea className="form-control" style={{height:50}} value={product.description} onChange={e => handleProductChange(product.id, "description", e.target.value)} /></td>
                   <td><input type="number" className="form-control" value={product.price} onChange={e => handleProductChange(product.id, "price", parseFloat(e.target.value))} /></td>
                   <td>
-                    <button className="btn btn-primary me-2" onClick={() => saveProduct(product)} disabled={saving}>Save</button>
-                    <button className="btn btn-warning me-2" onClick={() => resetProduct(product)} disabled={saving}>Reset</button>
-                    <button className="btn btn-danger" onClick={() => handleDeleteProduct(product.id)} disabled={saving}>Delete</button>
-                  </td>
+                  {product.active === false ? (
+                    <button 
+                      className="btn btn-success" 
+                      onClick={() => handleRestoreProduct(product.id)} 
+                      disabled={saving}
+                    >
+                      Restore
+                    </button>
+                  ) : (
+                    <>
+                      <button 
+                        className="btn btn-primary me-2" 
+                        onClick={() => saveProduct(product)} 
+                        disabled={saving}
+                      >
+                        Save
+                      </button>
+                      <button 
+                        className="btn btn-warning me-2" 
+                        onClick={() => resetProduct(product)} 
+                        disabled={saving}
+                      >
+                        Reset
+                      </button>
+                      <button 
+                        className="btn btn-danger" 
+                        onClick={() => handleDeleteProduct(product.id)} 
+                        disabled={saving}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </td>
+
                 </tr>
               ))}
             </tbody>

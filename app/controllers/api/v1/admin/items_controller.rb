@@ -6,7 +6,7 @@ module Api
         before_action :authorize_admin!
 
         def index
-            items = Item.where(active: true).select(:id, :name, :description, :price)
+            items = Item.select(:id, :name, :description, :price, :active)
             render json: items
         end
 
@@ -29,18 +29,26 @@ module Api
         end
 
         def destroy
-        item = Item.find(params[:id])
-        item.update(active: false)
-        render json: { message: "Item hidden successfully" }
+            item = Item.find(params[:id])
+            item.update(active: false)
+            render json: { message: "Item hidden successfully" }
         rescue ActiveRecord::RecordNotFound
-        render json: { error: "Item not found" }, status: :not_found
+            render json: { error: "Item not found" }, status: :not_found
+        end
+
+        def restore
+            item = Item.find(params[:id])
+            item.update(active: true)
+            render json: { message: "Item restored successfully" }
+        rescue ActiveRecord::RecordNotFound
+            render json: { error: "Item not found" }, status: :not_found
         end
 
 
         private
 
         def item_params
-            params.require(:item).permit(:id,:name, :description, :price)
+            params.require(:item).permit(:id,:name, :description, :price, :active)
         end
 
         def authorize_admin!

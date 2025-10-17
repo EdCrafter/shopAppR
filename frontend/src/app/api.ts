@@ -144,5 +144,14 @@ export const createProduct = async (product: { name: string; description: string
   }
 };
 
+export const restoreProduct = async (itemId: number) => {
+  try {
+    const response = await api.post(`/api/v1/admin/items/${itemId}/restore`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.data) return error.response.data;
+    throw error;
+  }
+};
 
 export default api;

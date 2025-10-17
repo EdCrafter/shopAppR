@@ -65,7 +65,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       namespace :admin do
         resources :users, only: [:index, :update, :destroy, :create]
-        resources :items, only: [:index, :update, :destroy, :create]
+        resources :items, only: [:index, :update, :destroy, :create] do
+          member do
+            post :restore
+          end
+        end
       end
     end
   end
