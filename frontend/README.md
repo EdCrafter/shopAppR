@@ -1,75 +1,105 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+📖 Overview
 
-Currently, two official plugins are available:
+This is the frontend part of the full-stack project built with React (Vite) and Ruby on Rails API.
+The goal of the app is to implement an online store with user registration, login, product browsing, and order management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Frontend communicates with the backend (Rails API) hosted on the same Render app or via API URL (e.g. https://your-backend.onrender.com).
 
-## React Compiler
+⚙️ Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+React 18
 
-Note: This will impact Vite dev & build performances.
+Vite — fast build tool
 
-## Expanding the ESLint configuration
+TypeScript
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Axios — API communication
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Redux Toolkit (if used for state)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Bootstrap / Tailwind / custom CSS (depending on your setup)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🧩 Project Structure
+frontend/
+├── src/
+│   ├── components/      # UI components
+│   ├── features/        # Redux slices or modules
+│   ├── app/             # API logic (axios instance, endpoints)
+│   ├── pages/           # Route pages
+│   ├── main.tsx         # App entry point
+│   └── App.tsx          # Routes and layout
+├── public/
+├── index.html
+├── package.json
+├── vite.config.ts
+└── tsconfig.json
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+🚀 Getting Started (Local Development)
+1️⃣ Install dependencies
+cd frontend
+npm install
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2️⃣ Run development server
+npm run dev
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+Then open http://localhost:5173
+ in your browser.
+
+🛠 API Configuration
+
+By default, the app expects the backend API at:
+
+http://localhost:3000
+
+
+If your Rails API is deployed on Render, you can set the base URL in:
+📄 src/app/api.ts
+
+const api = axios.create({
+  baseURL: "https://your-backend.onrender.com",
+  withCredentials: true,
+});
+
+🏗 Build for Production
+
+To create an optimized production build (used by Render):
+
+npm run build
+
+
+The built files will be placed in the dist/ directory.
+
+🌐 Deployment on Render
+
+When deploying together with Rails:
+
+The Rails app should serve the built React files from frontend/dist.
+
+Your Render build command should include:
+
+cd frontend && npm install && npm run build
+
+
+Rails bin/render-build.sh should precompile assets and handle build steps.
+
+💡 Features
+
+🔐 User registration & login (via Devise API)
+
+🛍 Product browsing and search
+
+🧾 Order creation and viewing
+
+👑 Admin panel for users & items management
+
+🌙 Modern responsive UI
+
+🧰 Scripts
+Command	Description
+npm run dev	Run local dev server
+npm run build	Build production bundle
+npm run preview	Preview production build locally
+npm run lint	Lint code (if ESLint installed)# shopFrontend
